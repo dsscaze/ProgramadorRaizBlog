@@ -9,7 +9,7 @@ using TabNewsCSharpSDK.Entities;
 
 namespace ProgramadorRaizBlogWeb
 {
-    public partial class _default : System.Web.UI.Page
+    public partial class _default : PaginaBase
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -18,7 +18,7 @@ namespace ProgramadorRaizBlogWeb
 
         private void listarPosts()
         {
-            List<TabNewsContent> posts = TabNewsApi.GetContents("programadorraiz", 10, 1);
+            List<TabNewsContent> posts = TabNewsApi.GetContents(nomeUsuarioTabNews, 10, 1);
 
             rptPosts.DataSource = posts.Where(p => p.parent_id == null);
             rptPosts.DataBind();

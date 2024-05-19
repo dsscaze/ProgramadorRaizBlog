@@ -141,6 +141,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="PaginaBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="post.aspx.cs">
       <DependentUpon>post.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

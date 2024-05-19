@@ -9,7 +9,7 @@ using TabNewsCSharpSDK.Entities;
 
 namespace ProgramadorRaizBlogWeb
 {
-    public partial class post : System.Web.UI.Page
+    public partial class post : PaginaBase
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -27,34 +27,12 @@ namespace ProgramadorRaizBlogWeb
         private void carregarPost()
         {
             string slug = Request["id"];
-            TabNewsContent conteudo = TabNewsApi.GetContent("programadorraiz", slug);
+            TabNewsContent conteudo = TabNewsApi.GetContent(nomeUsuarioTabNews, slug);
 
             h1Titulo.InnerHtml = conteudo.title;
             spanDataCriacao.InnerHtml = conteudo.created_at.AddHours(-3).ToString();
             divCorpo.InnerHtml = formatarCorpoPost(conteudo.body);
 
-        }
-
-        private string formatarCorpoPost(string corpo)
-        {
-            string corpoFormatado = string.Empty;
-
-            corpo = corpo.Replace("\n```c#", "<pre class=\"prettyprint\">")
-                         .Replace("\n```", "</pre>");
-
-            corpo = corpo.Replace("-------------------------------------------------------------------------------------------", "<hr />");
-
-            string[] paragrafos = corpo.Split(
-                    new string[] { "\n\n" },
-                    StringSplitOptions.None
-                );
-
-            foreach (var conteudo in paragrafos)
-            {
-                corpoFormatado += "<p>" + conteudo + "</p>";
-            }
-
-            return corpoFormatado;
         }
     }
 }
