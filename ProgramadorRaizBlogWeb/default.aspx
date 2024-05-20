@@ -41,7 +41,7 @@
 
 
                 <!-- Pager-->
-                <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Ver antigos →</a></div>
+                <%--<div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Ver antigos →</a></div>--%>
             </div>
         </div>
     </div>
