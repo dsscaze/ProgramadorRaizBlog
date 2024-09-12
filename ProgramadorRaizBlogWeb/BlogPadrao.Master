@@ -4,6 +4,19 @@
 
 <html>
 <head runat="server">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5Z39GGQREX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-5Z39GGQREX');
+    </script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3981678006242692"
+     crossorigin="anonymous"></script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="Blog do programador raiz" />
@@ -53,7 +66,7 @@
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <ul class="list-inline text-center">
-                          <%--  <li class="list-inline-item">
+                            <%--  <li class="list-inline-item">
                                 <a href="https://x.com/dsscaze" target="_blank">
                                     <span class="fa-stack fa-lg">
                                         <i class="fas fa-circle fa-stack-2x"></i>
@@ -70,7 +83,7 @@
                                 </a>
                             </li>--%>
                             <li class="list-inline-item">
-                                <a href="https://github.com/dsscaze"  target="_blank">
+                                <a href="https://github.com/dsscaze" target="_blank">
                                     <span class="fa-stack fa-lg">
                                         <i class="fas fa-circle fa-stack-2x"></i>
                                         <i class="fab fa-github fa-stack-1x fa-inverse"></i>
@@ -79,7 +92,7 @@
                             </li>
 
                             <li class="list-inline-item">
-                                <a href="https://www.youtube.com/@programadorraiz"  target="_blank">
+                                <a href="https://www.youtube.com/@programadorraiz" target="_blank">
                                     <span class="fa-stack fa-lg">
                                         <i class="fas fa-circle fa-stack-2x"></i>
                                         <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
