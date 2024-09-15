@@ -18,9 +18,9 @@ namespace ProgramadorRaizBlogWeb
 
         private void listarPosts()
         {
-            List<TabNewsContent> posts = TabNewsApi.GetContents(nomeUsuarioTabNews, 10, 1);
+            List<TabNewsContent> posts = TabNewsApi.Get10LastedPosts(nomeUsuarioTabNews, 10, 1);
 
-            rptPosts.DataSource = posts.Where(p => p.parent_id == null);
+            rptPosts.DataSource = posts;
             rptPosts.DataBind();
         }
     }
