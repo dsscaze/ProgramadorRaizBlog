@@ -1,44 +1,38 @@
-@using TabNewsClientCore.Entities
-@model TabNewsContent
+@model ProgramadorRaizBlogCore.Models.AutorViewModel
 @{
-    ViewData["Title"] = Model?.Title ?? "Post";
+    ViewData["Title"] = "Sobre o Autor";
 }
 
 <!-- Page Header-->
-<header class="masthead" style="background-image: url('~/assets/img/post-bg.jpg')">
+<header class="masthead" style="background-image: url('~/assets/img/about-bg.jpg')">
     <div class="container position-relative px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
-                <div class="post-heading">
-                    <h1>@Model?.Title</h1>
-                    <span class="meta">
-                        criado por
-                        <a asp-area="" asp-controller="Autor" asp-action="Index">programador raiz</a>
-                        em <span>@Model?.CreatedAt.ToString("dd/MM/yyyy")</span>
-                    </span>
+                <div class="page-heading">
+                    <h1>Sobre Programador Raiz</h1>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Post Content-->
-<article class="mb-4">
+<!-- Main Content-->
+<main class="mb-4">
     <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
-                @if (!string.IsNullOrEmpty(Model?.Body))
+                @if (Model != null && !string.IsNullOrEmpty(Model.Description))
                 {
-                    @Html.Raw(Model.Body)
+                    @Html.Raw(Model.Description)
                 }
                 else
                 {
-                    <p>Conteúdo não disponível.</p>
+                    <p>Informações do autor não disponíveis no momento.</p>
                 }
             </div>
         </div>
     </div>
-</article>
+</main>
 
 <!-- Voltar para início -->
 <div class="container px-4 px-lg-5 mb-4">

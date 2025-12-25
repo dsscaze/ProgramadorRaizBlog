@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ProgramadorRaizBlogCore.Models;
+using ProgramadorRaizBlogCore.Helpers;
 using System.Diagnostics;
 using TabNewsClientCore;
 
@@ -17,7 +18,7 @@ public class PostController : Controller
         _configuration = configuration;
     }
 
-    public async Task<IActionResult> Details(string slug)
+    public IActionResult Details(string slug)
     {
         if (string.IsNullOrEmpty(slug))
         {
@@ -31,6 +32,9 @@ public class PostController : Controller
         {
             return NotFound();
         }
+
+        // Formatar o corpo do post
+        post.Body = MarkdownHelper.FormatarCorpoPost(post.Body);
 
         return View(post);
     }

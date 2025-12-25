@@ -1,8 +1,16 @@
 
+using ProgramadorRaizBlogCore.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Adicionar serviços ao container
 builder.Services.AddControllersWithViews();
+
+// Adicionar cache em memória
+builder.Services.AddMemoryCache();
+
+// Registrar serviço de autenticação do TabNews
+builder.Services.AddSingleton<ITabNewsAuthService, TabNewsAuthService>();
 
 var app = builder.Build();
 

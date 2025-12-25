@@ -16,7 +16,7 @@ public class HomeController : Controller
         _configuration = configuration;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
         var nomeUsuarioTabNews = _configuration["TabNews:NomeUsuario"] ?? "programadorraiz";
         var posts = TabNewsApi.Get10LastedPosts("programadorraiz");
