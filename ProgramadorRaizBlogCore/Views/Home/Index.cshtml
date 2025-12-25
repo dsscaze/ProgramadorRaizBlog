@@ -1,0 +1,56 @@
+@using TabNewsClientCore.Entities
+@model List<TabNewsContent>
+@{
+    ViewData["Title"] = "Início";
+}
+
+<!-- Page Header-->
+<header class="masthead" style="background-image: url('~/assets/img/home-bg.jpg')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading">
+                    <h1>Programador Raiz</h1>
+                    <span class="subheading">Um blog sobre programação</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content-->
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var post in Model)
+                {
+                    <!-- Post preview-->
+                    <div class="post-preview">
+                        <a asp-area="" asp-controller="Post" asp-action="Details" asp-route-slug="@post.Slug">
+                            <h2 class="post-title">@post.Title</h2>
+                        </a>
+                        <p class="post-meta">
+                            criado por
+                            <a asp-area="" asp-controller="Home" asp-action="Privacy">programador raiz</a>
+                            em @post.CreatedAt
+                        </p>
+                    </div>
+                    <!-- Divider-->
+                    <hr class="my-4" />
+                }
+            }
+            else
+            {
+                <div class="alert alert-info" role="alert">
+                    Nenhum post encontrado no momento.
+                </div>
+            }
+
+            <!-- Pager-->
+            <!--<div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Ver antigos →</a></div>-->
+        </div>
+    </div>
+</div>
+

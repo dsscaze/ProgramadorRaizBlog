@@ -1,0 +1,50 @@
+@using TabNewsClientCore.Entities
+@model TabNewsContent
+@{
+    ViewData["Title"] = Model?.Title ?? "Post";
+}
+
+<!-- Page Header-->
+<header class="masthead" style="background-image: url('~/assets/img/post-bg.jpg')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="post-heading">
+                    <h1>@Model?.Title</h1>
+                    <span class="meta">
+                        criado por
+                        <a asp-area="" asp-controller="Home" asp-action="Privacy">programador raiz</a>
+                        em <span>@Model?.CreatedAt</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content-->
+<article class="mb-4">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                @if (!string.IsNullOrEmpty(Model?.Body))
+                {
+                    @Html.Raw(Model.Body)
+                }
+                else
+                {
+                    <p>Conteúdo não disponível.</p>
+                }
+            </div>
+        </div>
+    </div>
+</article>
+
+<!-- Voltar para início -->
+<div class="container px-4 px-lg-5 mb-4">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-primary">← Voltar para Início</a>
+        </div>
+    </div>
+</div>
