@@ -9,7 +9,8 @@ builder.Services.AddControllersWithViews();
 // Adicionar cache em memória
 builder.Services.AddMemoryCache();
 
-// Registrar serviço de autenticação do TabNews
+// Registrar serviços de autenticação do TabNews
+builder.Services.AddSingleton<ITokenStorageService, FileTokenStorageService>();
 builder.Services.AddSingleton<ITabNewsAuthService, TabNewsAuthService>();
 
 var app = builder.Build();

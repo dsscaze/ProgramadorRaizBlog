@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Caching.Memory;
+using ProgramadorRaizBlogCore.Helpers;
 using TabNewsClientCore;
 using TabNewsClientCore.Entities;
 
@@ -15,32 +16,58 @@ public class TabNewsAuthService : ITabNewsAuthService
     private readonly IMemoryCache _cache;
     private readonly IConfiguration _configuration;
     private readonly ILogger<TabNewsAuthService> _logger;
+    private readonly ITokenStorageService _tokenStorage;
     private const string SessionCacheKey = "TabNewsSessionId";
     private const string UserCacheKey = "TabNewsUser";
 
     public TabNewsAuthService(
         IMemoryCache cache,
         IConfiguration configuration,
-        ILogger<TabNewsAuthService> logger)
+        ILogger<TabNewsAuthService> logger,
+        ITokenStorageService tokenStorage)
     {
         _cache = cache;
         _configuration = configuration;
         _logger = logger;
+        _tokenStorage = tokenStorage;
     }
 
     public async Task<string> GetSessionIdAsync()
     {
-        // Tentar obter do cache
+        // 1. Priorizar token configurado em appsettings.json ou environment variables
+        var configuredToken = _configuration["TabNews:SessionToken"];
+        if (!string.IsNullOrEmpty(configuredToken) && !configuredToken.StartsWith("OBTER_EM_"))
+        {
+            _logger.LogInformation("Usando SessionToken configurado");
+            return configuredToken;
+        }
+
+        // 2. Tentar obter do cache (mais rápido)
         if (_cache.TryGetValue(SessionCacheKey, out string? cachedSessionId) && !string.IsNullOrEmpty(cachedSessionId))
         {
             _logger.LogInformation("Session ID obtido do cache");
             return cachedSessionId;
         }
 
-        // Se não estiver no cache, fazer login
-        _logger.LogInformation("Session ID não encontrado no cache. Fazendo login...");
-        var sessionId = await LoginAndCacheAsync();
-        return sessionId;
+        // 3. Tentar obter do arquivo (token salvo pelo admin)
+        var storedToken = await _tokenStorage.GetTokenAsync();
+        if (!string.IsNullOrEmpty(storedToken))
+        {
+            _logger.LogInformation("Session ID obtido do arquivo tokens.json");
+            
+            // Colocar no cache também
+            var cacheOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromHours(23));
+            _cache.Set(SessionCacheKey, storedToken, cacheOptions);
+            
+            return storedToken;
+        }
+
+        // 4. Falhar com instrução clara
+        throw new InvalidOperationException(
+            "Token não encontrado. Configure em:\n" +
+            "1. User Secrets: dotnet user-secrets set \"TabNews:SessionToken\" \"seu-token\"\n" +
+            "2. Ou acesse /admin/login e faça login no seu PC (que não é bloqueado pelo Cloudflare)");
     }
 
     public async Task<TabNewsUser> GetAuthenticatedUserAsync()
@@ -58,7 +85,7 @@ public class TabNewsAuthService : ITabNewsAuthService
         
         var user = await Task.Run(() => TabNewsApi.GetUser(sessionId));
         
-        // Armazenar no cache por 23 horas (menos que a sessão para garantir renovação)
+        // Armazenar no cache por 23 horas
         var cacheOptions = new MemoryCacheEntryOptions()
             .SetAbsoluteExpiration(TimeSpan.FromHours(23));
         
@@ -76,34 +103,36 @@ public class TabNewsAuthService : ITabNewsAuthService
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                throw new InvalidOperationException("Credenciais do TabNews não configuradas no appsettings.json");
+                throw new InvalidOperationException("Credenciais do TabNews não configuradas. Faça login em /admin/login");
             }
 
-            // Fazer login de forma assíncrona
-            var userSession = await Task.Run(() => TabNewsApi.LoginUser(email, password));
+            _logger.LogInformation("Tentando login com email: {Email}", email);
+
+            // Fazer login usando o helper com User-Agent e cookies
+            var userSession = await TabNewsHttpHelper.LoginUserAsync(email, password);
 
             if (string.IsNullOrEmpty(userSession?.Token))
             {
                 throw new InvalidOperationException("Login falhou: Token não retornado");
             }
 
-            // Armazenar no cache por 23 horas (sessões do TabNews duram ~24h)
-            var cacheOptions = new MemoryCacheEntryOptions()
-                .SetAbsoluteExpiration(TimeSpan.FromHours(23))
-                .RegisterPostEvictionCallback((key, value, reason, state) =>
-                {
-                    _logger.LogInformation("Session ID removido do cache. Motivo: {Reason}", reason);
-                });
+            _logger.LogInformation("Login realizado com sucesso! Token: {Token}", userSession.Token.Substring(0, 10) + "...");
 
+            // Salvar em arquivo para próximas requisições
+            await _tokenStorage.SaveTokenAsync(userSession.Token);
+
+            // Armazenar no cache por 23 horas
+            var cacheOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromHours(23));
             _cache.Set(SessionCacheKey, userSession.Token, cacheOptions);
             
-            _logger.LogInformation("Login realizado com sucesso. Session ID armazenado no cache.");
+            _logger.LogInformation("Token armazenado em cache e arquivo.");
 
             return userSession.Token;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao fazer login no TabNews");
+            _logger.LogError(ex, "Erro ao fazer login no TabNews. Acesse /admin/login para autenticar");
             throw;
         }
     }

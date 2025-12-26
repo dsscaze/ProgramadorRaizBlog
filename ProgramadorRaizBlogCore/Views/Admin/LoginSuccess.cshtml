@@ -1,0 +1,41 @@
+@model TabNewsClientCore.Entities.TabNewsUserSession
+@{
+    ViewData["Title"] = "Login Bem-sucedido";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">Login Realizado com Sucesso!</h4>
+                <p>Copie o token abaixo e execute no seu terminal:</p>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5>Token:</h5>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="token" value="@Model?.Token" readonly>
+                        <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">Copiar</button>
+                    </div>
+
+                    <h5 class="mt-4">Próximos passos:</h5>
+                    <p>Execute no seu PC:</p>
+                    <pre><code>dotnet user-secrets set "TabNews:SessionToken" "@(Model?.Token)"</code></pre>
+
+                    <p class="mt-3">Ou coloque no seu arquivo de serviço Linux:</p>
+                    <pre><code>Environment=TabNews__SessionToken=@(Model?.Token)</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard() {
+    const token = document.getElementById('token').value;
+    navigator.clipboard.writeText(token).then(() => {
+        alert('Token copiado!');
+    });
+}
+</script>
