@@ -79,11 +79,11 @@ public class TabNewsAuthService : ITabNewsAuthService
             return cachedUser;
         }
 
-        // Se não estiver no cache, obter do TabNews
+        // Se não estiver no cache, obter do TabNews usando username público
         _logger.LogInformation("Usuário não encontrado no cache. Obtendo do TabNews...");
-        var sessionId = await GetSessionIdAsync();
+        var username = _configuration["TabNews:NomeUsuario"] ?? "programadorraiz";
         
-        var user = await Task.Run(() => TabNewsApi.GetUser(sessionId));
+        var user = await Task.Run(() => TabNewsApi.GetUser(username));
         
         // Armazenar no cache por 23 horas
         var cacheOptions = new MemoryCacheEntryOptions()
